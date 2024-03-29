@@ -1,0 +1,23 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "chattertools"
+version = "0.1.0"
+authors = [
+    { name = "Pete Oxenham", email = "pete+chattertools@chatter.dev" }
+]
+description = "A collection of tools for CNC machine related development."
+readme = "README.md"
+requires-python = ">=3.6"
+license = "MIT"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/Chatter-Software-Development/chattertools"
+Issues = "https://github.com/Chatter-Software-Development/chattertools/issues"
