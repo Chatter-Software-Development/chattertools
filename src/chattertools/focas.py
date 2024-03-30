@@ -1,13 +1,9 @@
 import os
-
-from ctypes import *
-import platform
-import importlib.resources as pkg_resources
-import contextlib
-
-from .focas_structs import *
 import platform
 from pathlib import Path
+from ctypes import *
+
+from chattertools.focas_structs import *
 
 class Focas:
     def __init__(self, ip: str, port: int = 8193, timeout: int = 3, logfile: str = 'focas.log'):
@@ -298,7 +294,7 @@ class Focas:
             DRIVER_DIR = os.path.join(BASE_DIR, 'lib', 'Fwlib64')
             DRIVER_NAME = 'Fwlib64'
             DRIVER_PATH = os.path.join(BASE_DIR, DRIVER_DIR, DRIVER_NAME + '.dll')
-            
+
             if not os.path.exists(DRIVER_PATH):
                 raise Exception(f"Driver not found at {DRIVER_PATH}")
             self.fwlib = windll.LoadLibrary(DRIVER_PATH)
