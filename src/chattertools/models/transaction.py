@@ -3,16 +3,16 @@ from ..helpers.parsers import parseDatetime
 
 class Transaction:
     def __init__(self, timestamp: datetime, dataType: str, value: str):
-        self.timestamp = parseDatetime(timestamp)
+        self.timestamp = parseDatetime(timestamp) if timestamp else None
         self.dataType = dataType
-        self.value = value
+        self.value = str(value)
 
     @staticmethod
     def fromDict(data: dict) -> 'Transaction':
         return Transaction(
             data['timestamp'],
-            data['dataType'],
-            data['value']
+            int(data['dataType']),
+            str(data['value'])
         )
     
     def toDict(self) -> dict:

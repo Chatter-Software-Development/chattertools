@@ -2,6 +2,8 @@ from typing import List
 from ..models.transaction import Transaction
 from .service import Service
 
+from datetime import datetime
+
 class TransactionService(Service):
     def __init__(self, requestor, machineId: int, *args, **kwargs):
         super().__init__(requestor, *args, **kwargs)
@@ -27,17 +29,10 @@ class TransactionService(Service):
         data = self._requestor.get(f"/machines/{id}/transactions/{id}")
         return Transaction.fromDict(data)
     
-    def create(self, transaction: int) -> Transaction:
-        raise NotImplementedError("Method not implemented")
+    def create(self, timestamp: datetime, dataType: int, value: str) -> Transaction:
         """
         Create a new transaction
         """
-        data = transaction.toDict()
-        data = self._requestor.post(f"/machines/{self.machineId}/transactions", data=data)
+        transaction = Transaction(timestamp, dataType, value)
+        data = self._requestor.post(f"/machines/{self.machineId}/transactions", data=transaction.toDict())
         return Transaction.fromDict(data)
-    
-    def delete(self, id: int) -> None:
-        """
-        Delete a transaction by ID
-        """
-        self._requestor.delete(f"/machines/{self.machineId}/transactions/{id}")
