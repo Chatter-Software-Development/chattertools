@@ -1,26 +1,38 @@
 from datetime import datetime
-from ..helpers.parsers import parseDatetime
+from ..helpers.parsers import parseDatetime, parseInt, parseBool, parseApiDatetime
+from .data_type import DataType
+from typing import Any
 
 class Transaction:
-    def __init__(self, timestamp: datetime, dataType: str, value: str):
-        self.timestamp = parseDatetime(timestamp) if timestamp else None
+    def __init__(self, timestamp: datetime, dataType: DataType, value: Any):
+        self.timestamp = parseDatetime(timestamp) if timestamp else datetime.now()
         self.dataType = dataType
-        self.value = str(value)
+        self.value = self.enforceType(dataType, value)
 
     @staticmethod
     def fromDict(data: dict) -> 'Transaction':
         return Transaction(
             data['timestamp'],
-            int(data['dataType']),
+            DataType.fromValue(int(data['dataType'])),
             str(data['value'])
         )
     
     def toDict(self) -> dict:
         return {
-            "timestamp": self.timestamp,
-            "dataType": self.dataType,
-            "value": self.value
+            "timestamp": parseApiDatetime(self.timestamp),
+            "dataType": self.dataType.value,
+            "value": str(self.value)
         }
+    
+    @staticmethod
+    def enforceType(dataType: DataType, value):
+        if value is None:
+            return None
+        parser = DataType.getParser(dataType.type)
+        value = parser(value) if parser else value
+        if not isinstance(value, dataType.type):
+            raise TypeError(f"Value {value} is not of type {dataType.type}, got {type(value)} instead")
+        return value
     
     def __str__(self):
         return f"Transaction {self.timestamp}: {self.dataType} - {self.value}"
