@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "chattertools"
-version = "0.1.0"
+version = "1.0.0"
 authors = [
     { name = "Pete Oxenham", email = "pete+chattertools@chatter.dev" }
 ]
@@ -16,6 +16,9 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
+]
+dependencies = [
+    "requests>=2.31.0",
 ]
 
 [project.urls]
