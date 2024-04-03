@@ -12,8 +12,9 @@ focas = ch.Focas(
 # Get the program name
 response = focas.cnc_sysinfo()
 print('Cnc additianl info:', response.addinfo)
-print('Cnc Series', response.series)
-print('Cnc Max axis:', response.max_axis)
+print('Cnc Type', response.cnc_type)
+print("Cnc Machine type", response.mt_type)
+print('Cnc Numvber of Controlled axis:', response.axis)
 
 # Disconnect from the machine
 focas = None
