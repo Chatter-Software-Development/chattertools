@@ -190,6 +190,11 @@ class Focas:
         return buffer.getPyObj()
     
     def cnc_rdopmsg3(self):
+        """ Reafctored to use list
+            numberRead is the actual number of returned messages it gets overwritten 
+            the last message datano will return -1 if empty
+            """
+
         f = self.fwlib.cnc_rdopmsg3
         f.argtypes = [c_ushort, c_short, POINTER(c_short), POINTER(OPMSG)]
         f.restype = c_short
@@ -199,7 +204,7 @@ class Focas:
         buffer = OPMSG()
         ret = []
 
-        result = f(self.handle, sequenceNumber, byref(numberRead), buffer)
+        result = f(self.handle, sequenceNumber, byref(numberRead), byref(buffer))
         self._validateResponse(result)
         for x in range(int(numberRead.value)):
             if buffer.msg[x].datano != -1:
