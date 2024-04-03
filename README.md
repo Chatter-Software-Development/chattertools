@@ -3,6 +3,34 @@
 ## What is ChatterTools?
 ChatterTools is a Python library built by [Chatter](https://chatter.dev) to build applications that interface with CNC machines.
 
+Chatter tools depends on the chatter server running.
+
+This repo has code for the server and the client
+
+## Quickstart
+
+```python
+import chattertools as ch
+client = ch.Client(key='YOUR_APIKEY')  # connect to the chattertools server
+machines = client.machines.list()  # list machines on the local network
+for m in machines: print(m)
+data = machines[0].state.get()   #get the data for a single machine
+for key, value in data.items():
+	print(f'{key}: {value}') #print the key value data about that machine
+```
+The above code prints 
+```
+????
+
+```
+
+
+## Installation
+To install ChatterTools, run the following command:
+```bash
+pip install chattertools
+```
+
 ## Supported Machines
 
 | Machine | Chatter API | Local Network |
@@ -22,11 +50,6 @@ ChatterTools is a Python library built by [Chatter](https://chatter.dev) to buil
 Chatter API: Run a Chatterbox or Chatter Connector on your local machines and interface programatically via the Chatter API.
 Local Network: Directly interface with the machine on your local network.
 
-## Installation
-To install ChatterTools, run the following command:
-```bash
-pip install chattertools
-```
 
 ## Modules
 
@@ -90,6 +113,8 @@ focas = None
 ```
 
 #### Approach
+
+
 Our goal with the Focas wrapper is to build a simple Python wrapper that removes the complexities in the base library (like passing through handles and pointers) and instead provides a more Pythonic interface. In doing this, we want to make sure that the original FOCAS documentation and function names are still preserved, so that you can reference the original Fanuc documentation for function information, both in usage and contributing to this project.
 
 #### Example Function Comparison
