@@ -2,7 +2,6 @@
 
 ## What is ChatterTools?
 ChatterTools is a Python library built by [Chatter](https://chatter.dev) to build applications that interface with CNC machines.
-In our initial release, ChatterTools includes a library for fetching a machine's state.
 
 ## Supported Machines
 
@@ -20,31 +19,13 @@ In our initial release, ChatterTools includes a library for fetching a machine's
 | Siemens | ❌ | ❌ |
 | Mitsubishi | ❌ | ❌ |
 
+Chatter API: Run a Chatterbox or Chatter Connector on your local machines and interface programatically via the Chatter API.
+Local Network: Directly interface with the machine on your local network.
+
 ## Installation
 To install ChatterTools, run the following command:
 ```bash
 pip install chattertools
-```
-
-## Usage
-To use ChatterTools, first import the library:
-```python
-import chattertools as ch
-```
-
-Next, create a new Fanuc object:
-```python
-focas = ch.Focas(ip='10.0.2.124')
-```
-
-Test a query to the Fanuc machine:
-```python
-print(focas.cnc_exeprgname2())
-```
-
-Close the connection and free resources:
-```python
-focas = None
 ```
 
 ## Modules
@@ -86,6 +67,27 @@ To use the Chatter API client, you'll need an API key. Log into the web applicat
 
 ### Fanuc FOCAS Wrapper
 FOCAS is a protocol made by Fanuc for interacting with Fanuc controls. Traditionally, this is programmed in C++ or C#. ChatterTools provides a simplified Python wrapper on top of the Fanuc drivers compatible with both Windows and Linux.
+
+#### Usage
+To use the Focas wrapper, first import the library:
+```python
+import chattertools as ch
+```
+
+Next, create a new Fanuc object:
+```python
+focas = ch.Focas(ip='10.0.2.124')
+```
+
+Test a query to the Fanuc machine:
+```python
+print(focas.cnc_exeprgname2())
+```
+
+Close the connection and free resources:
+```python
+focas = None
+```
 
 #### Approach
 Our goal with the Focas wrapper is to build a simple Python wrapper that removes the complexities in the base library (like passing through handles and pointers) and instead provides a more Pythonic interface. In doing this, we want to make sure that the original FOCAS documentation and function names are still preserved, so that you can reference the original Fanuc documentation for function information, both in usage and contributing to this project.
