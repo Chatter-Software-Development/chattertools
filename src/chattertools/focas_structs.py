@@ -105,12 +105,17 @@ class odbact():
     def __str__(self):
         return f'odbact(data={self.data})'
 
-class OPMSG(ctypes.Structure):
+class OPMSG_DATA(ctypes.Structure):
     _fields_ = [
         ('datano', ctypes.c_short),
         ('type', ctypes.c_short),
         ('char_num', ctypes.c_short),
         ('data', ctypes.c_char * 256)
+    ]
+
+class OPMSG(ctypes.Structure):
+    _fields_ = [
+        ('msg',OPMSG_DATA * 5 )
     ]
 
 class ODBALMMSG(ctypes.Structure):

@@ -194,21 +194,18 @@ class Focas:
         f.argtypes = [c_ushort, c_short, POINTER(c_short), POINTER(OPMSG)]
         f.restype = c_short
 
+        sequenceNumber = c_short(-1)
+        numberRead = c_short(5)
         buffer = OPMSG()
-
-        sequenceNumber = c_short(0)
-        numberRead = c_short(1)
-
         ret = []
 
-        while True:
-            result = f(self.handle, sequenceNumber, byref(numberRead), byref(buffer))
-            self._validateResponse(result)
-            msg = buffer.data.decode('ascii').strip()
-            if len(msg) == 0 or msg is None:
-                break
-            ret.append(msg)
-            sequenceNumber.value += 1
+        result = f(self.handle, sequenceNumber, byref(numberRead), buffer)
+        self._validateResponse(result)
+        for x in range(int(numberRead.value)):
+            if buffer.msg[x].datano != -1:
+                msg = buffer.msg[x].data.decode('ascii').strip()
+                ret.append(msg)
+        
 
         return ret
     
