@@ -3,6 +3,34 @@
 ## What is ChatterTools?
 ChatterTools is a Python library built by [Chatter](https://chatter.dev) to build applications that interface with CNC machines.
 
+Chatter tools depends on the chatter server running.
+
+This repo has coe for the server and the client
+
+## Quickstart
+
+```python
+import chattertools as ch
+client = ch.Client(key='YOUR_APIKEY')
+machines = client.machines.list()
+for m in machines: print(m)
+data = machines[0].state.get()
+for key, value in data.items():
+	print(f'{key}: {value}')
+```
+The above code prints 
+```
+????
+
+```
+
+
+## Installation
+To install ChatterTools, run the following command:
+```bash
+pip install chattertools
+```
+
 ## Supported Machines
 
 | Machine | Chatter API | Local Network |
@@ -22,11 +50,6 @@ ChatterTools is a Python library built by [Chatter](https://chatter.dev) to buil
 Chatter API: Run a Chatterbox or Chatter Connector on your local machines and interface programatically via the Chatter API.
 Local Network: Directly interface with the machine on your local network.
 
-## Installation
-To install ChatterTools, run the following command:
-```bash
-pip install chattertools
-```
 
 ## Modules
 
