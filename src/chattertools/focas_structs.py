@@ -136,3 +136,32 @@ class odbalmmsg():
 
     def __str__(self):
         return f'odbalmmsg(alm_no={self.alm_no}, type={self.type}, axis={self.axis}, msg_len={self.msg_len}, alm_msg={self.alm_msg})'
+    
+class ODBSYS(ctypes.Structure):
+    '''Used with cnc_sysinfo  MS'''
+    _fields_ = [
+        ('addinfo',ctypes.c_short),
+        ('max_axis', ctypes.c_short),
+        ('cnc_type', ctypes.c_char * 2),
+        ('mt_type', ctypes.c_char * 2),
+        ('series', ctypes.c_char * 4),
+        ('version', ctypes.c_char * 4),
+        ('axis', ctypes.c_char * 2)
+    ]
+
+    def getPyObj(self):
+        return odbsys(self.addinfo, self.max_axis, self.cnc_type, self.mt_type, self.series, self.version, self.axis)
+    
+class odbsys():
+    def __init__(self, addinfo, max_axis, cnc_type, mt_type, series, version, axis):
+            self.addinfo = int(addinfo)
+            self.max_axis = int(max_axis)
+            self.cnc_type = cnc_type.decode('ascii').strip()
+            self.mt_type = mt_type.decode('ascii').strip()
+            self.series = series.decode('ascii').strip()
+            self.version = version.decode('ascii').strip()
+            self.axis = axis.decode('ascii').strip() #prefer to conver to int but expected return is string
+    
+    def __str__(self) -> str:
+        return f'odbsys(addinfo={self.addinfo}, max_axis={self.max_axis}, cnc_type={self.cnc_type}, mt_type={self.mt_type}, series={self.series}, version={self.version}, axis={self.axis})'
+    
