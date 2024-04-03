@@ -113,6 +113,8 @@ focas = None
 ```
 
 #### Approach
+
+
 Our goal with the Focas wrapper is to build a simple Python wrapper that removes the complexities in the base library (like passing through handles and pointers) and instead provides a more Pythonic interface. In doing this, we want to make sure that the original FOCAS documentation and function names are still preserved, so that you can reference the original Fanuc documentation for function information, both in usage and contributing to this project.
 
 #### Example Function Comparison
