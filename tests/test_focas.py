@@ -6,7 +6,7 @@ class TestFocas(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.focas = ch.Focas(ip='10.0.2.51', port=8193, timeout=3)
+        cls.focas = ch.Focas(ip='192.168.1.132', port=8193, timeout=3)
 
     def test_cnc_allclibhndl3(self):
         self.assertTrue(self.focas.handle != 0)
@@ -41,6 +41,10 @@ class TestFocas(unittest.TestCase):
         self.focas.cnc_wrmacro(MACRO_VAR, TEST_VALUE)
         macroRead = self.focas.cnc_rdmacro(MACRO_VAR)
         self.assertTrue(macroRead == TEST_VALUE)
+
+    def test_cnc_sysinfo(self):
+        response = self.focas.cnc_sysinfo()
+        self.assertTrue(response != None)
 
     @classmethod
     def tearDownClass(self):

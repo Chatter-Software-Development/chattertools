@@ -233,6 +233,34 @@ class Focas:
         self._validateResponse(result)
 
         return True
+    
+    def cnc_sysinfo(self):
+        """ Reads the system information of CNC. The various information is stored in each member of "ODBSYS".
+        Args:
+            None
+        Omitted Fanuc Args:
+            handle: The handle
+            ODBSYS: Structure to store the system information
+        Returns:
+            odbsys(Class)
+                addinfo (int)
+                max_axis (int)
+                cnc_type (str)
+                mt_type (str)
+                series (str)
+                version (str)
+                axes (str)
+            """
+        f = self.fwlib.cnc_sysinfo
+        f.argtypes = [c_ushort,POINTER(ODBSYS)]
+        f.restype = c_short
+
+        _sys_info = ODBSYS()
+
+        result = f(self.handle,byref(_sys_info))
+        self._validateResponse(result)
+
+        return _sys_info.getPyObj()
 
     @staticmethod
     def decodeFanucMacro(input: ODBM):
