@@ -5,18 +5,18 @@ ChatterTools is a Python library built by [Chatter](https://chatter.dev) to buil
 
 Chatter tools depends on the chatter server running.
 
-This repo has coe for the server and the client
+This repo has code for the server and the client
 
 ## Quickstart
 
 ```python
 import chattertools as ch
-client = ch.Client(key='YOUR_APIKEY')
-machines = client.machines.list()
+client = ch.Client(key='YOUR_APIKEY')  # connect to the chattertools server
+machines = client.machines.list()  # list machines on the local network
 for m in machines: print(m)
-data = machines[0].state.get()
+data = machines[0].state.get()   #get the data for a single machine
 for key, value in data.items():
-	print(f'{key}: {value}')
+	print(f'{key}: {value}') #print the key value data about that machine
 ```
 The above code prints 
 ```
