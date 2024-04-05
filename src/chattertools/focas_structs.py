@@ -4,13 +4,6 @@ import chattertools.struct_decorator as sd
 
 @sd.focus_struct
 class ODBM(ctypes.Structure):
-    #_fields_ =[
-    #    ('datano', ctypes.c_short),
-    #    ('dummy', ctypes.c_short),
-    #    ('mcr_val', ctypes.c_long),
-    #    ('dec_val', ctypes.c_long)
-    #]
-
     datano: ctypes.c_short
     dummy: ctypes.c_short
     mcr_val: ctypes.c_long
@@ -19,8 +12,6 @@ class ODBM(ctypes.Structure):
 @sd.focus_struct
 class ODBEXEPRG(ctypes.Structure):
     _pack_ = 4
-    # _fields_ = [("name", ctypes.c_char * 36),
-    #             ("oNumber", ctypes.c_long), ]
     name: ctypes.c_char * 36
     oNumber: ctypes.c_long
 
