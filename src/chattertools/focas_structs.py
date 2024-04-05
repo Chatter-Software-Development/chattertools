@@ -1,19 +1,29 @@
 
 import ctypes
+import chattertools.struct_decorator as sd
 
+@sd.focus_struct
 class ODBM(ctypes.Structure):
-    _fields_ =[
-        ('datano', ctypes.c_short),
-        ('dummy', ctypes.c_short),
-        ('mcr_val', ctypes.c_long),
-        ('dec_val', ctypes.c_long)
-    ]
+    #_fields_ =[
+    #    ('datano', ctypes.c_short),
+    #    ('dummy', ctypes.c_short),
+    #    ('mcr_val', ctypes.c_long),
+    #    ('dec_val', ctypes.c_long)
+    #]
 
+    datano: ctypes.c_short
+    dummy: ctypes.c_short
+    mcr_val: ctypes.c_long
+    dec_val: ctypes.c_long
 
+@sd.focus_struct
 class ODBEXEPRG(ctypes.Structure):
     _pack_ = 4
-    _fields_ = [("name", ctypes.c_char * 36),
-                ("oNumber", ctypes.c_long), ]
+    # _fields_ = [("name", ctypes.c_char * 36),
+    #             ("oNumber", ctypes.c_long), ]
+    name: ctypes.c_char * 36
+    oNumber: ctypes.c_long
+
     
     def getPyObj(self):
         return odbexeprg(self.name, self.oNumber)
@@ -27,22 +37,22 @@ class odbexeprg():
         return f'obdexeprg(name={self.name}, oNumber={self.oNumber})'
 
 
+@sd.focus_struct
 class ODBST(ctypes.Structure):
-    _fields_ = [
-        ('dummy', ctypes.c_short * 2),
-        ('aut', ctypes.c_short),
-        ('manual', ctypes.c_short),
-        ('run', ctypes.c_short),
-        ('edit', ctypes.c_short),
-        ('motion', ctypes.c_short),
-        ('mstb', ctypes.c_short),
-        ('emergency', ctypes.c_short),
-        ('write', ctypes.c_short),
-        ('labelskip', ctypes.c_short),
-        ('alarm', ctypes.c_short),
-        ('warning', ctypes.c_short),
-        ('battery', ctypes.c_short),
-    ]
+    dummy: ctypes.c_short * 2
+    aut: ctypes.c_short
+    manual: ctypes.c_short
+    run: ctypes.c_short
+    edit: ctypes.c_short
+    motion: ctypes.c_short
+    mstb: ctypes.c_short
+    emergency: ctypes.c_short
+    write: ctypes.c_short
+    labelskip: ctypes.c_short
+    alarm: ctypes.c_short
+    warning: ctypes.c_short
+    battery: ctypes.c_short
+
 
     def getPyObj(self):
         return odbst(self.aut, self.manual, self.run, self.edit, self.motion, self.mstb, self.emergency, self.alarm, self.write, self.labelskip, self.warning, self.battery)
@@ -89,11 +99,11 @@ class odbst():
     def __str__(self):
         return f'odbst(aut={self.aut}, manual={self.manual}, run={self.run}, edit={self.edit}, motion={self.motion}, mstb={self.mstb}, emergency={self.emergency}, alarm={self.alarm}, write={self.write}, labelskip={self.labelskip}, warning={self.warning}, battery={self.battery})'
 
+@sd.focus_struct
 class ODBACT(ctypes.Structure):
-    _fields_ = [
-        ('dummy', ctypes.c_short * 2),
-        ('data', ctypes.c_long)
-    ]
+    
+    dummy: ctypes.c_short * 2
+    data: ctypes.c_long
 
     def getPyObj(self):
         return odbact(self.data)
@@ -105,28 +115,29 @@ class odbact():
     def __str__(self):
         return f'odbact(data={self.data})'
 
+@sd.focus_struct
 class OPMSG_DATA(ctypes.Structure):
-    _fields_ = [
-        ('datano', ctypes.c_short),
-        ('type', ctypes.c_short),
-        ('char_num', ctypes.c_short),
-        ('data', ctypes.c_char * 256)
-    ]
+    
+    datano: ctypes.c_short
+    type: ctypes.c_short
+    char_num: ctypes.c_short
+    data: ctypes.c_char * 256
+    
 
+@sd.focus_struct
 class OPMSG(ctypes.Structure):
-    _fields_ = [
-        ('msg',OPMSG_DATA * 5 )
-    ]
+    msg: OPMSG_DATA * 5
+    
 
+@sd.focus_struct
 class ODBALMMSG(ctypes.Structure):
-    _fields_ = [
-        ("alm_no", ctypes.c_long),
-        ("type", ctypes.c_short),
-        ("axis", ctypes.c_short),
-        ("dummy", ctypes.c_short),
-        ("msg_len", ctypes.c_short),
-        ("alm_msg", ctypes.c_char * 32)
-    ]
+    alm_no: ctypes.c_long
+    type: ctypes.c_short
+    axis: ctypes.c_short
+    dummy: ctypes.c_short
+    msg_len: ctypes.c_short
+    alm_msg: ctypes.c_char * 32
+    
 
     def getPyObj(self):
         return odbalmmsg(self.alm_no, self.type, self.axis, self.msg_len, self.alm_msg)
@@ -141,18 +152,19 @@ class odbalmmsg():
 
     def __str__(self):
         return f'odbalmmsg(alm_no={self.alm_no}, type={self.type}, axis={self.axis}, msg_len={self.msg_len}, alm_msg={self.alm_msg})'
-    
+
+@sd.focus_struct
 class ODBSYS(ctypes.Structure):
     '''Used with cnc_sysinfo  MS'''
-    _fields_ = [
-        ('addinfo',ctypes.c_short),
-        ('max_axis', ctypes.c_short),
-        ('cnc_type', ctypes.c_char * 2),
-        ('mt_type', ctypes.c_char * 2),
-        ('series', ctypes.c_char * 4),
-        ('version', ctypes.c_char * 4),
-        ('axis', ctypes.c_char * 2)
-    ]
+    
+    addinfo: ctypes.c_short
+    max_axis: ctypes.c_short
+    cnc_type: ctypes.c_char * 2
+    mt_type: ctypes.c_char * 2
+    series: ctypes.c_char * 4
+    version: ctypes.c_char * 4
+    axis: ctypes.c_char * 2
+    
 
     def getPyObj(self):
         return odbsys(self.addinfo, self.max_axis, self.cnc_type, self.mt_type, self.series, self.version, self.axis)

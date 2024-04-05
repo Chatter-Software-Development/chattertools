@@ -141,6 +141,8 @@ There is a whole list of FOCAS functions available from (Inventcom)[https://www.
 - cnc_rdopmsg3 - Get any active operator messages
 - cnc_rdmacro - Read a macro variable
 - cnc_wrmacro - Write a macro variable
+- cnc_sysinfo - reads the system info from the cnc 
+
 
 # Contributing
 We welcome contributions to this library! We have only scratched the surface of the FOCAS. The Inventcom website has a full list of functions available, and all contributions should follow the same pattern. When adding a new function, please start with the same exact function name and arguments as the original FOCAS library. Omit arguments that are unneeded, such as handles and pointers, and instead return the data directly. This will make it easier for users to reference the original documentation and for us to add more functions in the future. When returning data which comes in the form of an enum, please implement a mapping as shown inside the `obst` class in focas_structs.py/
