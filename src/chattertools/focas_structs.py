@@ -2,14 +2,14 @@
 import ctypes
 import chattertools.struct_decorator as sd
 
-@sd.focus_struct
+@sd.focas_struct
 class ODBM(ctypes.Structure):
     datano: ctypes.c_short
     dummy: ctypes.c_short
     mcr_val: ctypes.c_long
     dec_val: ctypes.c_long
 
-@sd.focus_struct
+@sd.focas_struct
 class ODBEXEPRG(ctypes.Structure):
     _pack_ = 4
     name: ctypes.c_char * 36
@@ -28,7 +28,7 @@ class odbexeprg():
         return f'obdexeprg(name={self.name}, oNumber={self.oNumber})'
 
 
-@sd.focus_struct
+@sd.focas_struct
 class ODBST(ctypes.Structure):
     dummy: ctypes.c_short * 2
     aut: ctypes.c_short
@@ -90,7 +90,7 @@ class odbst():
     def __str__(self):
         return f'odbst(aut={self.aut}, manual={self.manual}, run={self.run}, edit={self.edit}, motion={self.motion}, mstb={self.mstb}, emergency={self.emergency}, alarm={self.alarm}, write={self.write}, labelskip={self.labelskip}, warning={self.warning}, battery={self.battery})'
 
-@sd.focus_struct
+@sd.focas_struct
 class ODBACT(ctypes.Structure):
     
     dummy: ctypes.c_short * 2
@@ -106,7 +106,7 @@ class odbact():
     def __str__(self):
         return f'odbact(data={self.data})'
 
-@sd.focus_struct
+@sd.focas_struct
 class OPMSG_DATA(ctypes.Structure):
     
     datano: ctypes.c_short
@@ -115,12 +115,12 @@ class OPMSG_DATA(ctypes.Structure):
     data: ctypes.c_char * 256
     
 
-@sd.focus_struct
+@sd.focas_struct
 class OPMSG(ctypes.Structure):
     msg: OPMSG_DATA * 5
     
 
-@sd.focus_struct
+@sd.focas_struct
 class ODBALMMSG(ctypes.Structure):
     alm_no: ctypes.c_long
     type: ctypes.c_short
@@ -144,7 +144,7 @@ class odbalmmsg():
     def __str__(self):
         return f'odbalmmsg(alm_no={self.alm_no}, type={self.type}, axis={self.axis}, msg_len={self.msg_len}, alm_msg={self.alm_msg})'
 
-@sd.focus_struct
+@sd.focas_struct
 class ODBSYS(ctypes.Structure):
     '''Used with cnc_sysinfo  MS'''
     
