@@ -1,42 +1,68 @@
 import os
 import platform
 from pathlib import Path
+import json
 from ctypes import *
 
 from chattertools.focas_structs import *
 
 class Focas:
     def __init__(self, ip: str, port: int = 8193, timeout: int = 3, logfile: str = 'focas.log'):
-        self.config = {
+        self._config = {
             'ip': ip,
             'port': port,
             'timeout': timeout,
             'logfile': logfile
         }
         
-        self.handle = c_ushort(0)
+        self._handle = c_ushort(0)
 
         self._loadDrivers()
 
         if self._isPlatformLinux():
             # Linux requires a logfile to exist while the connection is open, and a setup process to be run
-            logfileName = self.config.get('logfile')
-            self.fwlib.cnc_startupprocess(c_short(1), c_char_p(logfileName.encode('ascii')))
+            logfileName = self._config.get('logfile')
+            self._fwlib.cnc_startupprocess(c_short(1), c_char_p(logfileName.encode('ascii')))
 
         self._getHandle()
+        self._getSysInfo()
+        self._validateFocasMethods()
+        
+
 
     def __del__(self):
-        if self.handle.value:
+        if self._handle.value:
             self._releaseHandle()
         if self._isPlatformLinux():
             # Linux requires the exitprocess to be run when the connection is closed
-            self.fwlib.cnc_exitprocess()
+            self._fwlib.cnc_exitprocess()
 
     def _getHandle(self):
-        self.handle = self.cnc_allclibhndl3(self.config.get('ip'), self.config.get('port'), self.config.get('timeout'))
+        self._handle = self.cnc_allclibhndl3(self._config.get('ip'), self._config.get('port'), self._config.get('timeout'))
 
     def _releaseHandle(self):
         self.cnc_freelibhndl()
+
+    def _getSysInfo(self):
+        _response = self.cnc_sysinfo()
+        _model = 'i' if "{0:b}".format(_response.addinfo)[::-1][1] else ''
+        _series = _response.series[0].lower()
+        self._controlSeries = f'{_response.cnc_type}{_model}{_series}'
+
+    def _validateFocasMethods(self):
+        '''Load the json file from lib folder and compare the current focas method names to the master list for that series'''
+        BASE_DIR = Path(__file__).resolve().parent
+        LIB_DIR = os.path.join(BASE_DIR, 'lib')
+        FILE_NAME = 'flist_all'
+        DRIVER_PATH = os.path.join(BASE_DIR, LIB_DIR, FILE_NAME + '.json')
+        _cnc_methods = [x for x in dir(self) if not x.startswith('_')]
+        with open(DRIVER_PATH,'r') as j:
+            _data = json.loads(j.read())[self._controlSeries]
+        for x in _cnc_methods:
+            if x not in _data:
+                _cnc_methods.remove(x)
+        self._cncMethods = _cnc_methods        
+         
 
     # FOCAS Methods
     def cnc_allclibhndl3(self, ip: str, port: int, timeout: int = 10):
@@ -50,7 +76,7 @@ class Focas:
         Returns:
             int: The result of the connection
         """
-        func = self.fwlib.cnc_allclibhndl3
+        func = self._fwlib.cnc_allclibhndl3
         func.restype = c_short
         handle = c_ushort(0)
         result = func(ip.encode('ascii'), port, timeout, byref(handle))
@@ -66,9 +92,9 @@ class Focas:
         Returns:
             None
         """
-        func = self.fwlib.cnc_freelibhndl
+        func = self._fwlib.cnc_freelibhndl
         func.restype = c_short
-        result = func(self.handle)
+        result = func(self._handle)
         self._validateResponse(result)
 
     def cnc_exeprgname(self):
@@ -85,13 +111,13 @@ class Focas:
                 name (str): The name of the program
                 oNumber (int): The program number
         """
-        f = self.fwlib.cnc_exeprgname
+        f = self._fwlib.cnc_exeprgname
         f.argtypes = [c_ushort, POINTER(ODBEXEPRG)]
         f.restype = c_short
 
         exeprg = ODBEXEPRG()
 
-        result = f(self.handle, byref(exeprg))
+        result = f(self._handle, byref(exeprg))
         self._validateResponse(result)
 
         return exeprg.getPyObj()
@@ -107,13 +133,13 @@ class Focas:
         Returns:
             str: The full path of the program
         """
-        f = self.fwlib.cnc_exeprgname2
+        f = self._fwlib.cnc_exeprgname2
         f.argtypes = [c_ushort, POINTER(c_char * 256)]
         f.restype = c_short
 
         path = (c_char * 256)()
 
-        result = f(self.handle, byref(path))
+        result = f(self._handle, byref(path))
         self._validateResponse(result)
 
         return path.value.decode('ascii').strip()
@@ -130,13 +156,13 @@ class Focas:
             odbact (class):
                 data (int): The actual spindle speed
         """
-        f = self.fwlib.cnc_acts
+        f = self._fwlib.cnc_acts
         f.argtypes = [c_ushort, POINTER(ODBACT)]
         f.restype = c_short
 
         speed = ODBACT()
 
-        result = f(self.handle, byref(speed))
+        result = f(self._handle, byref(speed))
         self._validateResponse(result)
 
         return speed.getPyObj()
@@ -165,26 +191,26 @@ class Focas:
                 battery (bool): Status of battery
         """
 
-        f = self.fwlib.cnc_statinfo
+        f = self._fwlib.cnc_statinfo
         f.argtypes = [c_ushort, POINTER(ODBST)]
         f.restype = c_short
 
         status = ODBST()
 
-        result = f(self.handle, byref(status))
+        result = f(self._handle, byref(status))
         self._validateResponse(result)
 
         return status.getPyObj()
     
     def cnc_rdalmmsg(self):
-        f = self.fwlib.cnc_rdalmmsg
+        f = self._fwlib.cnc_rdalmmsg
         f.argtypes = [c_ushort, c_short, POINTER(c_short), POINTER(ODBALMMSG)]
         f.restype = c_short
 
         quantity = c_short(10)
         buffer = ODBALMMSG()
 
-        result = f(self.handle, c_short(-1), byref(quantity), byref(buffer))
+        result = f(self._handle, c_short(-1), byref(quantity), byref(buffer))
         self._validateResponse(result)
 
         return buffer.getPyObj()
@@ -195,7 +221,7 @@ class Focas:
             the last message datano will return -1 if empty
             """
 
-        f = self.fwlib.cnc_rdopmsg3
+        f = self._fwlib.cnc_rdopmsg3
         f.argtypes = [c_ushort, c_short, POINTER(c_short), POINTER(OPMSG)]
         f.restype = c_short
 
@@ -204,7 +230,7 @@ class Focas:
         buffer = OPMSG()
         ret = []
 
-        result = f(self.handle, sequenceNumber, byref(numberRead), byref(buffer))
+        result = f(self._handle, sequenceNumber, byref(numberRead), byref(buffer))
         self._validateResponse(result)
         for x in range(int(numberRead.value)):
             if buffer.msg[x].datano != -1:
@@ -215,29 +241,29 @@ class Focas:
         return ret
     
     def cnc_rdmacro(self, number: int):
-        f = self.fwlib.cnc_rdmacro
+        f = self._fwlib.cnc_rdmacro
         f.argtypes = [c_ushort, c_short, c_short, POINTER(ODBM)]
         f.restype = c_short
 
         macro = ODBM()
         
-        result = f(self.handle, c_short(number), c_short(12), byref(macro))
+        result = f(self._handle, c_short(number), c_short(12), byref(macro))
         self._validateResponse(result)
 
-        return self.decodeFanucMacro(macro)
+        return self._decodeFanucMacro(macro)
     
     def cnc_wrmacro(self, number: int, value: float):
-        f = self.fwlib.cnc_wrmacro
+        f = self._fwlib.cnc_wrmacro
         f.argtypes = [c_ushort, c_short, c_short, c_long, c_short]
         f.restype = c_short
 
-        result = f(self.handle, c_short(number), c_short(10), *self.encodeFanucMacro(value))
+        result = f(self._handle, c_short(number), c_short(10), *self._encodeFanucMacro(value))
         self._validateResponse(result)
 
         return True
     
     def cnc_sysinfo(self):
-        """ Reads the system information of CNC. The various information is stored in each member of "ODBSYS".
+        """ Reads the system information of CNC. The various information is stored in each member of "ODBSYS"
         Args:
             None
         Omitted Fanuc Args:
@@ -253,19 +279,19 @@ class Focas:
                 version (str)
                 axes (str)
             """
-        f = self.fwlib.cnc_sysinfo
+        f = self._fwlib.cnc_sysinfo
         f.argtypes = [c_ushort,POINTER(ODBSYS)]
         f.restype = c_short
 
         _sys_info = ODBSYS()
 
-        result = f(self.handle,byref(_sys_info))
+        result = f(self._handle,byref(_sys_info))
         self._validateResponse(result)
 
         return _sys_info.getPyObj()
 
     @staticmethod
-    def decodeFanucMacro(input: ODBM):
+    def _decodeFanucMacro(input: ODBM):
         macroVal = input.mcr_val
         decVal = input.dec_val
 
@@ -291,7 +317,7 @@ class Focas:
         return float(valStr)
     
     @staticmethod
-    def encodeFanucMacro(value: float):
+    def _encodeFanucMacro(value: float):
         if value is None:
             # Handle null value
             return c_long(0), c_short(-1)
@@ -327,7 +353,7 @@ class Focas:
 
             if not os.path.exists(DRIVER_PATH):
                 raise Exception(f"Driver not found at {DRIVER_PATH}")
-            self.fwlib = windll.LoadLibrary(DRIVER_PATH)
+            self._fwlib = windll.LoadLibrary(DRIVER_PATH)
 
             for file in os.listdir(DRIVER_DIR):
                 if file.endswith('.dll'):
@@ -353,7 +379,7 @@ class Focas:
             
             if not os.path.exists(DRIVER_PATH):
                 raise Exception(f"Driver not found at {DRIVER_PATH}")
-            self.fwlib = cdll.LoadLibrary(DRIVER_PATH)
+            self._fwlib = cdll.LoadLibrary(DRIVER_PATH)
 
         else:
             raise Exception('Unsupported platform: ' + platform.system())
