@@ -16,7 +16,7 @@ print(focas._controlSeries)# stores a string of the series of the machine ex "16
 # Get the cnc sys info 
 response = focas.cnc_sysinfo()
 print('Cnc additianl info:', "{0:b}".format(response.addinfo)) # return an int but need to convert to binaary to access individual bits 
-print('Cnc Type', response.cnc_type) 
+print('Cnc Type', response.cnc_type)
 print("Cnc Machine type", response.mt_type)
 print('Cnc Number of Controlled axis:', response.axis)
 
