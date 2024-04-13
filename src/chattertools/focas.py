@@ -45,8 +45,19 @@ class Focas:
 
     def _getSysInfo(self):
         _response = self.cnc_sysinfo()
-        _model = 'i' if "{0:b}".format(_response.addinfo)[::-1][1] else ''
-        _series = _response.series[0].lower()
+        _infodata = "{0:b}".format(_response.addinfo)[::-1]# reversed binary string to access using index
+        _model = 'i' if _infodata[1] else ''
+        if len(_infodata) < 8:
+            _series = _response.series[0].lower()
+        else:
+            for i in range(len(_infodata[8:])):
+                if int(_infodata[i]):
+                    if i != 4:
+                        _series = chr(65+i)
+                    else:
+                        _series = chr(66+i)
+                    break
+            
         self._controlSeries = f'{_response.cnc_type}{_model}{_series}'
 
     def _validateFocasMethods(self):
@@ -57,10 +68,14 @@ class Focas:
         DRIVER_PATH = os.path.join(BASE_DIR, LIB_DIR, FILE_NAME + '.json')
         _cnc_methods = [x for x in dir(self) if not x.startswith('_')]
         with open(DRIVER_PATH,'r') as j:
-            _data = json.loads(j.read())[self._controlSeries]
-        for x in _cnc_methods:
-            if x not in _data:
-                _cnc_methods.remove(x)
+            _jsondata = json.loads(j.read())
+        if self._controlSeries in _jsondata: # check to see if the series exists first if not return an empty list
+            _data = _jsondata[self._controlSeries]
+            for x in _cnc_methods:
+                if x not in _data:
+                    _cnc_methods.remove(x)
+        else:
+            _cnc_methods=[]
         self._cncMethods = _cnc_methods        
          
 
