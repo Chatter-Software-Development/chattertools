@@ -7,11 +7,6 @@ focas = ch.Focas(
     timeout=3       # Timeout in seconds    Default: 3
 )
 
-# Get the program name
-response = focas.cnc_exeprgname()
-print('Program Name:', response.name)
-print('Program Number:', response.oNumber)
-print('Program Path', focas.cnc_exeprgname2())
-
-# Disconnect from the machine
-focas = None
+# get the operator messages 
+response = focas.cnc_rdopmsg3()
+print(response)
