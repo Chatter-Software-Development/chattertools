@@ -8,6 +8,7 @@ SHARC_ID = "409151d72b34"
 MQTT_HOST = "wss.sharc.tech"
 SHARC_SENSOR = "s0"
 MQTT_PORT = 1883
+MACHINE_ID = 5187
 CHATTER_KEY = os.getenv('CHATTER_API_KEY')
 def print_sharc_event(note, sequence, message):
     print(f"[sharc:{SHARC_ID}] [sequence:{sequence}] {note} {message}")
@@ -15,8 +16,7 @@ def print_sharc_event(note, sequence, message):
 
 def send_part_count(message):
     chatter = ch.Client(key=CHATTER_KEY)
-    test_machine = chatter.machines.get(5187)
-    last_part = test_machine.transactions.list()[0].toDict()["value"]
+    test_machine = chatter.machines.get(MACHINE_ID)
     transaction = test_machine.transactions.create(None, ch.DataType.PART_COUNT, message[SHARC_SENSOR]["v"])
     print(transaction)
 

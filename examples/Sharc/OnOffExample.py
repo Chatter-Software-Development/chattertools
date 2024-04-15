@@ -8,6 +8,7 @@ load_dotenv()
 SHARC_ID = "409151d72b80"
 MQTT_HOST = "wss.sharc.tech"
 SHARC_SENSOR = "s3"
+MACHINE_ID = 5187
 MQTT_PORT = 1883
 CHATTER_KEY = os.getenv('CHATTER_API_KEY')
 
@@ -19,7 +20,7 @@ def print_sharc_event(note, sequence, message):
 def message_received(message):
     print(message)
     chatter = ch.Client(key=CHATTER_KEY)
-    test_machine = chatter.machines.get(5187)
+    test_machine = chatter.machines.get(MACHINE_ID)
     if message[SHARC_SENSOR]["v"] > 4:
         print(test_machine)
         transaction = test_machine.transactions.create(None, ch.DataType.ONLINE, True)

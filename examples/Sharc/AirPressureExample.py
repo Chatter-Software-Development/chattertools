@@ -7,6 +7,7 @@ load_dotenv()
 SHARC_ID = "409151d72b80"
 MQTT_HOST = "wss.sharc.tech"
 SHARC_SENSOR = "s3"
+MACHINE_ID = 5187
 MQTT_PORT = 1883
 CHATTER_KEY = os.getenv('CHATTER_API_KEY')
 def print_sharc_event(note, sequence, message):
@@ -15,7 +16,7 @@ def print_sharc_event(note, sequence, message):
 
 def send_air_pressure(message):
     chatter = ch.Client(key=CHATTER_KEY)
-    test_machine = chatter.machines.get(5187)
+    test_machine = chatter.machines.get(MACHINE_ID)
     transaction = test_machine.transactions.create(None, ch.DataType.AIR_PRESSURE, message[SHARC_SENSOR]["v"])
     print(transaction)
 
