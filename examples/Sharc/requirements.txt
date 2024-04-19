@@ -1,0 +1,4 @@
+python-dotenv==1.0.1
+Requests==2.31.0
+paho-mqtt==1.6.1
+chattertools==1.0.0

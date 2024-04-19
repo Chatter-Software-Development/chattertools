@@ -9,3 +9,4 @@ eggs/
 *.egg-info/
 *.egg
 *.log
+.idea/
