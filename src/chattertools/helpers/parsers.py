@@ -27,8 +27,9 @@ class Parse:
 
             raise ValueError(f'Invalid datetime format "{val}"')
     
-def parseApiDatetime(val: datetime) -> str:
-    return val.strftime("%Y-%m-%d %H:%M:%S")
+    @staticmethod
+    def apiDatetime(val: datetime) -> str:
+        return val.strftime("%Y-%m-%d %H:%M:%S")
     
 def parseBool(val: Union[bool, int, str]) -> bool:
     if val is None: return None

@@ -1,5 +1,5 @@
 from datetime import datetime
-from ..helpers.parsers import Parse, parseBool, parseApiDatetime
+from ..helpers.parsers import Parse, parseBool
 from .data_type import DataType
 from typing import Any
 
@@ -19,7 +19,7 @@ class Transaction:
     
     def toDict(self) -> dict:
         return {
-            "timestamp": parseApiDatetime(self.timestamp),
+            "timestamp": Parse.apiDatetime(self.timestamp),
             "dataType": self.dataType.value,
             "value": str(self.value)
         }
