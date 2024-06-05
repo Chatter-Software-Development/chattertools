@@ -1,11 +1,11 @@
 from datetime import datetime
-from ..helpers.parsers import parseDatetime, parseBool, parseApiDatetime
+from ..helpers.parsers import Parse, parseBool, parseApiDatetime
 from .data_type import DataType
 from typing import Any
 
 class Transaction:
     def __init__(self, timestamp: datetime, dataType: DataType, value: Any):
-        self.timestamp = parseDatetime(timestamp) if timestamp else datetime.now()
+        self.timestamp = Parse.datetime(timestamp) if timestamp else datetime.now()
         self.dataType = dataType
         self.value = self.enforceType(dataType, value)
 
