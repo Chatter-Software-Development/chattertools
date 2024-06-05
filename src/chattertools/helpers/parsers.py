@@ -31,13 +31,14 @@ class Parse:
     def apiDatetime(val: datetime) -> str:
         return val.strftime("%Y-%m-%d %H:%M:%S")
     
-def parseBool(val: Union[bool, int, str]) -> bool:
-    if val is None: return None
-    if isinstance(val, bool): return val
-    if isinstance(val, int):
-        try:
-            return bool(val)
-        except ValueError:
-            pass
-    if isinstance(val, str): return val.lower() == "true"
-    raise ValueError(f"Cannot convert value {val} to boolean")
+    @staticmethod
+    def bool(val: Union[bool, int, str]) -> bool:
+        if val is None: return None
+        if isinstance(val, bool): return val
+        if isinstance(val, int):
+            try:
+                return bool(val)
+            except ValueError:
+                pass
+        if isinstance(val, str): return val.lower() == "true"
+        raise ValueError(f"Cannot convert value {val} to boolean")

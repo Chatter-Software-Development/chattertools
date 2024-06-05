@@ -1,5 +1,5 @@
 from datetime import datetime
-from ..helpers.parsers import Parse, parseBool
+from ..helpers.parsers import Parse
 from .data_type import DataType
 from typing import Any
 
