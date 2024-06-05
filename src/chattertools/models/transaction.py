@@ -29,7 +29,7 @@ class Transaction:
         if value is None:
             return None
         parser = DataType.getParser(dataType.type)
-        value = parser(value) if parser else value
+        value = parser(value).unwrap() if parser else value
         if not isinstance(value, dataType.type):
             raise TypeError(f"Value {value} is not of type {dataType.type}, got {type(value)} instead")
         return value

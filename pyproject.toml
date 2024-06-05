@@ -19,6 +19,7 @@ classifiers = [
 ]
 dependencies = [
     "requests>=2.31.0",
+    "result>=0.17.0",
 ]
 
 [project.urls]
