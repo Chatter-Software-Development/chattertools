@@ -1,12 +1,14 @@
 from datetime import datetime
 from typing import Any, Union
 
-def parseInt(val: Any) -> int:
-    if val is None: return None
-    try:
-        return int(val)
-    except ValueError:
-        raise ValueError(f"Cannot convert value {val} to integer")
+class Parse:
+    @staticmethod
+    def int(val: Any) -> int:
+        if val is None: return None
+        try:
+            return int(val)
+        except ValueError:
+            raise ValueError(f"Cannot convert value {val} to integer")
 
 def parseDatetime(val: Union[datetime, int, str]) -> datetime:
     if val is None: return None

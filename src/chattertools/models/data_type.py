@@ -1,6 +1,6 @@
 from enum import Enum
 from datetime import datetime
-from ..helpers.parsers import parseDatetime, parseInt, parseBool
+from ..helpers.parsers import Parse, parseDatetime, parseBool
 
 class DataType(Enum):
     MODE = (1, str)
@@ -55,7 +55,7 @@ class DataType(Enum):
     @staticmethod
     def getParser(type):
         if type == int:
-            return parseInt
+            return Parse.int
         if type == bool:
             return parseBool
         if type == float:
