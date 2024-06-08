@@ -1,11 +1,11 @@
 from datetime import datetime
-from ..helpers.parsers import parseDatetime, parseInt, parseBool, parseApiDatetime
+from ..helpers.parsers import Parse
 from .data_type import DataType
 from typing import Any
 
 class Transaction:
     def __init__(self, timestamp: datetime, dataType: DataType, value: Any):
-        self.timestamp = parseDatetime(timestamp) if timestamp else datetime.now()
+        self.timestamp = Parse.datetime(timestamp) if timestamp else datetime.now()
         self.dataType = dataType
         self.value = self.enforceType(dataType, value)
 
@@ -19,7 +19,7 @@ class Transaction:
     
     def toDict(self) -> dict:
         return {
-            "timestamp": parseApiDatetime(self.timestamp),
+            "timestamp": Parse.apiDatetime(self.timestamp),
             "dataType": self.dataType.value,
             "value": str(self.value)
         }
@@ -29,7 +29,7 @@ class Transaction:
         if value is None:
             return None
         parser = DataType.getParser(dataType.type)
-        value = parser(value) if parser else value
+        value = parser(value).unwrap() if parser else value
         if not isinstance(value, dataType.type):
             raise TypeError(f"Value {value} is not of type {dataType.type}, got {type(value)} instead")
         return value
